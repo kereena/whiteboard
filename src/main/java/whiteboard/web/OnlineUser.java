@@ -2,8 +2,6 @@ package whiteboard.web;
 
 import org.webbitserver.WebSocketConnection;
 
-import java.beans.Transient;
-
 /**
  * Online user has connectionID, username, a boardID and the websocket client connection.
  */
