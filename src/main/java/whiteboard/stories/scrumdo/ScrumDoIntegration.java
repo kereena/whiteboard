@@ -1,8 +1,8 @@
 package whiteboard.stories.scrumdo;
 
-import scrumdo.ScrumDoApi;
 import scrumdo.ScrumDoApiFactory;
 import scrumdo.meta.FindResult;
+import scrumdo.meta.Tastypie;
 import scrumdo.model.Story;
 import whiteboard.stories.ScrumIntegration;
 import whiteboard.stories.StoryDetail;
@@ -16,18 +16,25 @@ public class ScrumDoIntegration implements ScrumIntegration {
     private static String SCRUMDO_USERNAME = "kereena";
     private static String SCRUMDO_PASSWORD = "Sunflower1";
 
-    private ScrumDoApi api;
+    public static ScrumDoIntegration newScrumDoIntegration() {
+        // construct ScrumDoApi object with my given details.
+        Tastypie pie = ScrumDoApiFactory.newScrumDo(
+                SCRUMDO_DEVELOPER_KEY,
+                SCRUMDO_USERNAME,
+                SCRUMDO_PASSWORD
+        ).getPie();
+
+        return new ScrumDoIntegration(pie);
+    }
+
+    // tastypie is the API SCrumDo are using.
+    private Tastypie pie;
 
     private long nextUpdate = 0;
     private List<StoryDetail> lastFound;
 
-    public ScrumDoIntegration() {
-        // construct ScrumDoApi object with my given details.
-        api = ScrumDoApiFactory.newScrumDo(
-                SCRUMDO_DEVELOPER_KEY,
-                SCRUMDO_USERNAME,
-                SCRUMDO_PASSWORD
-        );
+    protected ScrumDoIntegration(Tastypie pie) {
+        this.pie = pie;
     }
 
     /**
@@ -42,7 +49,7 @@ public class ScrumDoIntegration implements ScrumIntegration {
 
             System.out.println("loading ... ");
 
-            FindResult<Story> stories = api.getPie().findAll(Story.class, Story.TYPE);
+            FindResult<Story> stories = pie.findAll(Story.class, Story.TYPE);
 
             List<StoryDetail> result = new ArrayList<StoryDetail>();
             for (Story story : stories.objects) {

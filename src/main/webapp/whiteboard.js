@@ -27,6 +27,11 @@ Drawing.Path = function(app, elementID, color, data) {
 
 var Tools = {};
 
+Tools.ToSvg = function(elemID) {
+    var svg = $('<div>').append($('#' + elemID).clone()).html();
+    return svg;
+}
+
 /*
 Tools.Selection = function(app, elem) {
     var self = this;
@@ -117,7 +122,6 @@ App.Controller = function(hashID, divID) {
     self.width = self.paper.canvas.clientWidth ? self.paper.canvas.clientWidth : self.paper.width;
     self.height = self.paper.canvas.clientHeight ? self.paper.canvas.clientHeight : self.paper.height;
     self.colors = {};
-    self.color = '#000';
 
     console.log("width = " + self.width + ", height = " + self.height);
 
@@ -142,6 +146,14 @@ App.Controller = function(hashID, divID) {
         self.tool().up(self.ox, self.oy);
     });
 
+    self.__color = '#000';
+    self.color = function(newColor) {
+        if (!newColor)
+            return self.__color;
+        else
+            return self.__color = newColor;
+    }
+
     self.tool = function(newTool) {
         if (!newTool)
             return self.__tool;
@@ -150,10 +162,12 @@ App.Controller = function(hashID, divID) {
     };
 
     self.draw = function(id, type, data) {
+        var svg = Tools.ToSvg(id);
         var msg = JSON.stringify({
             elementID:   id,
             elementType: type,
-            elementData: data
+            elementData: data,
+            elementSvg: svg
         });
         self.client.send("draw", msg);
     }
@@ -179,8 +193,6 @@ App.Controller = function(hashID, divID) {
     self.onjoin = function(data) {
         // connectionID, boardID, username, color
         self.colors[data.username] = data.color;
-        if (data.username == self.username)
-            self.color = data.color;
     }
 
     self.onremove = function(data) {

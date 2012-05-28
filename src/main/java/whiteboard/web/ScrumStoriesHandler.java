@@ -10,7 +10,7 @@ import whiteboard.stories.scrumdo.ScrumDoIntegration;
 
 public class ScrumStoriesHandler implements HttpHandler {
 
-    private ScrumIntegration scrumSystem = new ScrumDoIntegration();
+    private ScrumIntegration scrumSystem = ScrumDoIntegration.newScrumDoIntegration();
 
     @Override
     public void handleHttpRequest(HttpRequest httpRequest, HttpResponse httpResponse, HttpControl httpControl) throws Exception {

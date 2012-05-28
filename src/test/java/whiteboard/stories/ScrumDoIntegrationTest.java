@@ -12,7 +12,7 @@ public class ScrumDoIntegrationTest {
     @Test
     public void testGetAllStories() throws Exception {
 
-        scrumDoIntegration = new ScrumDoIntegration();
+        scrumDoIntegration = ScrumDoIntegration.newScrumDoIntegration();
 
         List<StoryDetail> allStories = scrumDoIntegration.getStories();
 
