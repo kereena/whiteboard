@@ -1,0 +1,74 @@
+body, html, section {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#welcome {
+}
+.createWrapper {
+    background: transparent url(whiteboard-bg.jpg) repeat-x;
+    height: 250px;
+    margin: 10% 0;
+    padding: 85px 0;
+    text-align: center;
+}
+.createForm {
+    width: 60%;
+    margin: 0 auto;
+    padding: 10px;
+    border: 10px #87cefa solid;
+    background: #fff;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    -webkit-box-shadow: 3px 3px 4px #000;
+    box-shadow: 3px 3px 4px #000;
+}
+.createForm select, .createForm button {
+    font-size: 110%;
+}
+.createForm select {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-padding-end: 20px;
+    -webkit-padding-start: 2px;
+    -webkit-user-select: none;
+    border: 0; /* 1px solid #AAA;*/
+    background-color: #fff;
+    /* color: #555; */
+    font-size: inherit;
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.createForm button {
+    background-color: #87cefa;
+    color: #fff;
+    font-weight: bold;
+    -webkit-border-radius: 10px;
+    text-overflow: ellipsis;
+    border-radius: 10px;
+    border: 1px #65acd8 solid;
+}
+.usernameWrapper {
+
+}
+
+#whiteboard {
+}
+#canvas {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    cursor: crosshair;
+}
+#tools {
+    z-index: 999;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
