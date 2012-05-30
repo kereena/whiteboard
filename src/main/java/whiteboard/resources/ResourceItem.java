@@ -8,4 +8,5 @@ public class ResourceItem {
     public String filename;
     public String contentType;
     public byte[] content;
+    public String url;
 }

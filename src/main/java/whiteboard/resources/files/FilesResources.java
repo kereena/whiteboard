@@ -1,5 +1,6 @@
 package whiteboard.resources.files;
 
+import org.apache.commons.io.IOUtils;
 import whiteboard.resources.ResourceItem;
 import whiteboard.resources.ResourcesIntegration;
 
@@ -29,7 +30,7 @@ public class FilesResources implements ResourcesIntegration {
 
         try {
             FileOutputStream out = new FileOutputStream(file);
-            out.write(content);
+            IOUtils.write(content, out);
             out.close();
 
             return item;
@@ -54,7 +55,7 @@ public class FilesResources implements ResourcesIntegration {
         item.content = new byte[length];
         try {
             FileInputStream in = new FileInputStream(file);
-            in.read(item.content);
+            item.content = IOUtils.toByteArray(in);
             in.close();
 
             return item;

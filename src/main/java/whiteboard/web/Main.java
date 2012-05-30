@@ -1,6 +1,7 @@
 package whiteboard.web;
 
 import com.mongodb.Mongo;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
 import org.webbitserver.handler.EmbeddedResourceHandler;
@@ -12,6 +13,8 @@ import whiteboard.persistence.memory.MemoryNoPersistence;
 import whiteboard.persistence.mongodb.MongoDBPersistence;
 import whiteboard.resources.ResourcesIntegration;
 import whiteboard.resources.files.FilesResources;
+import whiteboard.stories.ScrumIntegration;
+import whiteboard.stories.scrumdo.ScrumDoIntegration;
 import whiteboard.web.util.RequireGoogleChromeHandler;
 
 import java.io.File;
@@ -19,6 +22,10 @@ import java.io.File;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ScrumIntegration scrumIntegration = ScrumDoIntegration.newScrumDoIntegration();
 
         ResourcesIntegration resources = new FilesResources(new File("./files"));
 
@@ -35,14 +42,14 @@ public class Main {
 
         WebServer server = WebServers.createWebServer(8080)
                 .add(new RequireGoogleChromeHandler()) // block other browsers than Chrome
-                .add("/whiteboard/interface", new WhiteboardHandler(users, whiteboardPersistence)) // handle whiteboard
-                .add("/whiteboard/create", new WhiteboardCreateHandler(whiteboardPersistence))
+                .add("/whiteboard/interface", new WhiteboardHandler(mapper, users, whiteboardPersistence)) // handle whiteboard
+                .add("/whiteboard/create", new WhiteboardCreateHandler(mapper, whiteboardPersistence))
                 // .add("/whiteboard/snapshot", new WhiteboardSnapshotHandler(whiteboardPersistence))
-                .add("/whiteboard/export", new WhiteboardCreateHandler(whiteboardPersistence))
-                .add("/whiteboard/list", new WhiteboardListHandler(whiteboardPersistence))
-                .add("/resource/upload", new FileUploadHandler(resources))  // handle uploads from whiteboard
+                .add("/whiteboard/export", new WhiteboardExportHandler(mapper, whiteboardPersistence))
+                .add("/whiteboard/list", new WhiteboardListHandler(mapper, whiteboardPersistence))
+                .add("/resource/upload", new FileUploadHandler(mapper, resources))  // handle uploads from whiteboard
                 .add("/resource/download", new FileDownloadHandler(resources))  // handle downloads from whiteboard
-                .add("/scrum/stories", new ScrumStoriesHandler()) // handle scrum stories
+                .add("/scrum/stories", new ScrumStoriesHandler(mapper, scrumIntegration)) // handle scrum stories
                 .add(new StaticFileHandler("src/main/webapp")) // give path to HTML and Javascript files.
                 .start() // start the server
                 .get(); // and return it

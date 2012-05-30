@@ -2,17 +2,19 @@
 <html>
 <head>
     <title>Whiteboard Kereena</title>
+    <link href="css/ui-lightness/jquery-ui-1.8.20.custom.css" rel="stylesheet" type="text/css"/>
+    <link href="css/jquery.noty.css" rel="stylesheet" type="text/css"/>
+    <link href="css/noty_theme_default.css" rel="stylesheet" type="text/css"/>
     <link href="index.css" rel="stylesheet" type="text/css"/>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/jquery-ui-1.8.20.custom.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <!-- <script src="js/fileuploader.js"></script> -->
+    <script src="js/fileupload.js"></script>
+    <script src="js/jquery.noty.js"></script>
     <script src="whiteboard.js"></script>
 </head>
 <body>
 <section id="create">
-    <div class="usernameWrapper">
-        Welcome <span class="username"></span>
-    </div>
     <div class="createWrapper">
         <span class="createForm">
             <select placeholder="Select the Story to discuss ..." id="createInput">
@@ -23,7 +25,9 @@
 </section>
 <section id="join">
     <div class="usernameWrapper">
-        Welcome <span class="username"></span>
+        <span class="createForm">
+            Welcome <span id="username"></span>
+        </span>
     </div>
     <div class="createWrapper">
         <span class="createForm">
@@ -36,10 +40,36 @@
 <section id="whiteboard">
     <div id="canvas"></div>
     <div id="tools">
-        <button id="line">Line</button>
-        <button id="pencil">Pencil</button>
-        <button id="image">Image</button>
-        <button id="snapshot">Snapshot</button>
+        <img src="img/category-2.png" id="icons" alt="Icons" title="Icons"/>
+        <div class="color black"></div>
+        <div class="color red"></div>
+        <div class="color green"></div>
+        <div class="color blue"></div>
+        <div class="color yellow"></div>
+        <img src="img/tag.png" id="text" alt="Text" title="Text"/>
+        <img src="img/pencil.png" id="pencil" alt="Pencil" title="Pencil"/>
+        <img src="img/line.png" id="line" alt="Line" title="Line"/>
+        <img src="img/illustration.png" id="image" alt="Image" title="Image"/>
+        <img src="img/ticket.png" id="eraser" alt="Eraser" title="Eraser"/>
+        <img src="img/star.png" id="snapshot" alt="Snapshot" title="Snapshot"/>
+    </div>
+    <div id="imageupload">
+        Select image
+        <input type="file" name="f" id="imageUploadInput"/>
+    </div>
+    <div id="texttool">
+        Enter text
+        <input type="text" name="t" id="textInput"/>
+    </div>
+    <div id="icontool">
+        Select icon
+        <img src="icons/gui/button.png" alt="Button" title="Button"/>
+        <img src="icons/gui/checkbox.png" alt="Checkbox" title="Checkbox"/>
+        <img src="icons/gui/paging.png" alt="Paging" title="Paging"/>
+        <img src="icons/gui/radiobutton.png" alt="Radio" title="Radio"/>
+        <img src="icons/gui/slider.png" alt="Slider" title="Slider"/>
+        <img src="icons/gui/textbox.png" alt="Textbox" title="Textbox"/>
+        <hr/>
     </div>
 </section>
 </body>

@@ -1,23 +1,24 @@
 package whiteboard.web;
 
-import com.google.gson.Gson;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.webbitserver.BaseWebSocketHandler;
 import org.webbitserver.WebSocketConnection;
 import whiteboard.persistence.PersistenceIntegration;
 import whiteboard.persistence.WhiteboardDetail;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class WhiteboardHandler extends BaseWebSocketHandler {
 
     private Logger LOG = Logger.getLogger(WhiteboardHandler.class.getName());
 
+    private ObjectMapper mapper;
     private OnlineUsers onlineUsers;
     private PersistenceIntegration whiteboardPersistence;
 
-    private Gson gson = new Gson();
-
-    public WhiteboardHandler(OnlineUsers onlineUsers, PersistenceIntegration whiteboardPersistence) {
+    public WhiteboardHandler(ObjectMapper mapper, OnlineUsers onlineUsers, PersistenceIntegration whiteboardPersistence) {
+        this.mapper = mapper;
         this.onlineUsers = onlineUsers;
         this.whiteboardPersistence = whiteboardPersistence;
     }
@@ -41,11 +42,6 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
 
         LOG.info("(+)    connected: " + connID + ", user=" + user.getUsername() + ", board=" + user.getBoardID());
 
-        // send online users to user.
-        for (OnlineUser tmp : onlineUsers.findByBoardID(user.getBoardID())) {
-            encode(connection, "onjoin", tmp);
-        }
-
         // send drawing items to user.
         for (WhiteboardDetail.DrawingItem drawingItem : whiteboard.items)
             encode(connection, "ondraw", drawingItem);
@@ -53,7 +49,7 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
         // notify other users
         for (OnlineUser tmp : onlineUsers.findByBoardID(user.getBoardID())) {
             if (!tmp.getConnectionID().equals(user.getConnectionID())) {
-                encode(tmp.getClient(), "onjoin", user);
+                encode(tmp.client, "onjoin", user);
             }
         }
     }
@@ -66,7 +62,7 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
 
         // notify other users
         for (OnlineUser tmp : onlineUsers.findByBoardID(removed.getBoardID())) {
-            encode(tmp.getClient(), "onleave", tmp);
+            encode(tmp.client, "onleave", tmp);
         }
     }
 
@@ -75,7 +71,7 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
 
         OnlineUser user = (OnlineUser) connection.data("user");
 
-        LOG.info("received(" + user.getClient().httpRequest().id() + ") = " + message);
+        LOG.info("received(" + user.client.httpRequest().id() + ") = " + message);
 
         int idx = message.indexOf(",");
         if (idx == -1)
@@ -93,16 +89,19 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
 
     public void draw(OnlineUser user, String payload) {
 
-        WhiteboardDetail.DrawingItem item = gson.fromJson(payload, WhiteboardDetail.DrawingItem.class);
-        System.out.println("item = " + item + ", user=" + user);
-        item.username = user.getUsername();
+        try {
+            WhiteboardDetail.DrawingItem item = mapper.readValue(payload, WhiteboardDetail.DrawingItem.class);
+            item.username = user.getUsername();
 
-        WhiteboardDetail detail = whiteboardPersistence.addDrawingItem(user.getBoardID(), item);
+            WhiteboardDetail detail = whiteboardPersistence.addDrawingItem(user.getBoardID(), item);
 
-        for (OnlineUser tmp : onlineUsers.findByBoardID(user.getBoardID())) {
-            if (!tmp.getConnectionID().equals(user.getConnectionID())) {
-                encode(tmp.getClient(), "ondraw", item);
+            for (OnlineUser tmp : onlineUsers.findByBoardID(user.getBoardID())) {
+                if (!tmp.getConnectionID().equals(user.getConnectionID())) {
+                    encode(tmp.client, "ondraw", item);
+                }
             }
+        } catch (IOException e) {
+            LOG.warning("Error parsing: " + e.getMessage());
         }
     }
 
@@ -111,8 +110,8 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
         whiteboardPersistence.removeDrawingItem(user.getBoardID(), elementID);
 
         for (OnlineUser tmp : onlineUsers.findByBoardID(user.getBoardID())) {
-            if (!tmp.getConnectionID().equals(user.getBoardID())) {
-                encode(tmp.getClient(), "onremove", elementID);
+            if (!tmp.getConnectionID().equals(user.getConnectionID())) {
+                encode(tmp.client, "onremove", elementID);
             }
         }
     }
@@ -128,9 +127,13 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
     }
 
     private void encode(WebSocketConnection connection, String action, Object object) {
-        String encoded = action + "," + gson.toJson(object);
-        LOG.info("sending(" + connection.httpRequest().id() + ") = " + encoded);
-        connection.send(encoded);
+        try {
+            String encoded = action + "," + mapper.writeValueAsString(object);
+            LOG.info("sending(" + connection.httpRequest().id() + ") = " + encoded);
+            connection.send(encoded);
+        } catch (Exception e) {
+            LOG.warning("Error processing: " + e.getMessage());
+        }
     }
 
 }

@@ -2,6 +2,8 @@ package whiteboard.web;
 
 import org.webbitserver.WebSocketConnection;
 
+import javax.persistence.Transient;
+
 /**
  * Online user has connectionID, username, a boardID and the websocket client connection.
  */
@@ -11,7 +13,7 @@ public class OnlineUser {
     private String boardID;
     private String username;
     private String color;
-    private transient WebSocketConnection client;
+    public transient WebSocketConnection client;
 
     public OnlineUser(String connectionID, String boardID, String username, String color, WebSocketConnection client) {
         this.connectionID = connectionID;
@@ -41,7 +43,4 @@ public class OnlineUser {
         this.username = username;
     }
 
-    public WebSocketConnection getClient() {
-        return client;
-    }
 }

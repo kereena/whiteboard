@@ -55,7 +55,7 @@ public class ScrumDoIntegration implements ScrumIntegration {
             for (Story story : stories.objects) {
                 // status documentation: 1 = todo, 2 = in progress, 3 = reviewing, 4 = done.
                 if (story.status == 2 || story.status == 3) {
-                    StoryDetail detail = new StoryDetail("Story #" + story.local_id + ": " + story.summary, story.detail, story.resource_uri.resource_uri);
+                    StoryDetail detail = new StoryDetail("Story " + story.local_id + " " + story.summary, story.detail, story.resource_uri.resource_uri);
                     result.add(detail);
                 }
             }

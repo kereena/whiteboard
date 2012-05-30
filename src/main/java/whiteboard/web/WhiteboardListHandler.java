@@ -1,14 +1,12 @@
 package whiteboard.web;
 
-import com.google.gson.Gson;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.webbitserver.HttpControl;
 import org.webbitserver.HttpHandler;
 import org.webbitserver.HttpRequest;
 import org.webbitserver.HttpResponse;
 import whiteboard.persistence.PersistenceIntegration;
-import whiteboard.persistence.WhiteboardDetail;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,9 +14,11 @@ import java.util.logging.Logger;
 public class WhiteboardListHandler implements HttpHandler {
 
     private Logger LOG = Logger.getLogger(WhiteboardListHandler.class.getName());
+    private ObjectMapper mapper;
     private PersistenceIntegration whiteboardPersistence;
 
-    public WhiteboardListHandler(PersistenceIntegration whiteboardPersistence) {
+    public WhiteboardListHandler(ObjectMapper mapper, PersistenceIntegration whiteboardPersistence) {
+        this.mapper = mapper;
         this.whiteboardPersistence = whiteboardPersistence;
     }
 
@@ -28,8 +28,10 @@ public class WhiteboardListHandler implements HttpHandler {
         response.boardIDs = whiteboardPersistence.findIDs();
         response.success = true;
 
+        LOG.info("boards: " + response.boardIDs);
+
         // output list as JSON.
-        httpResponse.header("Content-Type", "application/json").content(new Gson().toJson(response)).end();
+        httpResponse.header("Content-Type", "application/json").content(mapper.writeValueAsString(response)).end();
     }
 
     public class WhiteboardListResponse {

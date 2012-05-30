@@ -25,6 +25,8 @@ public class FileDownloadHandler implements HttpHandler {
         if (item == null)
             return;
 
+        System.out.println("download = " + item.content.length);
+
         httpResponse.header("Content-Type", item.contentType).content(item.content).end();
     }
 }
