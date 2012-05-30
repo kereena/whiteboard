@@ -1,8 +1,12 @@
 package whiteboard.persistence;
 
+import java.util.List;
+
 public interface PersistenceIntegration {
 
     public WhiteboardDetail create(String owner, String title, String description);
+
+    public List<String> findIDs();
 
     public WhiteboardDetail findByBoardID(String boardID);
 

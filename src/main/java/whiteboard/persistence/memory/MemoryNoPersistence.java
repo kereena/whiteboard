@@ -7,9 +7,7 @@ import whiteboard.persistence.PersistenceIntegration;
 import whiteboard.persistence.WhiteboardDetail;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * MemoryNoPersistence is a PersistenceIntegration which uses memory for storing items. It is implemented for
@@ -24,6 +22,11 @@ public class MemoryNoPersistence implements PersistenceIntegration {
 
     public MemoryNoPersistence(ColorsIntegration colors) {
         this.colors = colors;
+    }
+
+    @Override
+    public List<String> findIDs() {
+        return new ArrayList<String>(whiteboards.keySet());
     }
 
     @Override

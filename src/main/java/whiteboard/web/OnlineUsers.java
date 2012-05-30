@@ -31,20 +31,6 @@ public class OnlineUsers {
         return found;
     }
 
-    public OnlineUser findByUsernameAndBoardID(String username, String boardID) {
-        for (OnlineUser user : users)
-            if (username.equals(user.getUsername()) && boardID.equals(user.getBoardID()))
-                return user;
-        return null;
-    }
-
-    public OnlineUser findByConnectionID(String connectionID) {
-        for (OnlineUser user : users)
-            if (connectionID.equals(user.getConnectionID()))
-                return user;
-        return null;
-    }
-
     public List<OnlineUser> findByBoardID(String boardID) {
         List<OnlineUser> r = new ArrayList<OnlineUser>();
         for (OnlineUser user : users)

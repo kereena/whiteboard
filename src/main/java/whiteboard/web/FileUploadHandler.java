@@ -1,29 +1,45 @@
 package whiteboard.web;
 
+import com.google.gson.Gson;
 import org.webbitserver.HttpControl;
 import org.webbitserver.HttpHandler;
 import org.webbitserver.HttpRequest;
 import org.webbitserver.HttpResponse;
+import whiteboard.resources.ResourceItem;
+import whiteboard.resources.ResourcesIntegration;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileUploadHandler implements HttpHandler {
 
+    private ResourcesIntegration resourcesIntegration;
+
+    public FileUploadHandler(ResourcesIntegration resourcesIntegration) {
+        this.resourcesIntegration = resourcesIntegration;
+    }
+
     // allowed content types
-    public static String[] CONTENT_TYPES = {
+    public static List<String> CONTENT_TYPES = Arrays.asList(
             "image/png",
             "image/jpeg"
-    };
+    );
 
     @Override
     public void handleHttpRequest(HttpRequest httpRequest, HttpResponse httpResponse, HttpControl httpControl) throws Exception {
 
+        String boardID  = httpRequest.queryParam("t");
+        String filename = httpRequest.queryParam("f");
+        String contentType = httpRequest.header("Content-Type");
 
-        String username = httpRequest.queryParam("username");
-        String boardID  = httpRequest.queryParam("boardID");
+        if (!CONTENT_TYPES.contains(contentType))
+            return;
 
         byte[] body = httpRequest.bodyAsBytes();
 
-        httpResponse.end();
+        ResourceItem item = resourcesIntegration.create(boardID, filename, contentType, body);
 
-        //To change body of implemented methods use File | Settings | File Templates.
+        httpResponse.header("Content-Type", "application/json").content(new Gson().toJson(item)).end();
     }
 }
