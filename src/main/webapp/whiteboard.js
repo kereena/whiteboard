@@ -14,7 +14,7 @@ Raphael.el.tooltip = function (text) {
             this.tp.ox = event.clientX;
             this.tp.oy = event.clientY;
         });
-        this.tp.attr({text: this.username})
+        this.tp.attr({text: this.data('username')});
         this.tp.show().toFront();
     }
     this.hideTip = function(event) {
@@ -252,12 +252,19 @@ App.Controller = function(hashID, divID) {
         */
     });
     self.element.mousedown(function(event) {
-        self.drawing = true;
-        self.tool().start(self.ox, self.oy);
+        var topMost = self.paper.getElementByPoint(self.ox, self.oy);
+        if (!topMost) {
+            self.drawing = true;
+            self.modalDrawing = self.paper.rect(0, 0, self.width, self.height).attr({fill: '#fff', opacity: 0.0});
+            self.tool().start(self.ox, self.oy);
+        }
     });
     self.element.mouseup(function(event) {
-        self.drawing = false;
-        self.tool().up(self.ox, self.oy);
+        if (self.drawing) {
+            self.tool().up(self.ox, self.oy);
+            self.modalDrawing.remove();
+            self.drawing = false;
+        }
     });
 
     self.__color = '#000';
