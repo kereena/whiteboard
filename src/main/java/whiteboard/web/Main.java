@@ -23,6 +23,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        // what port to listen on, get from system properties and default to 8080
+        int port = Integer.parseInt(System.getProperty("port", "8080"));
+
+        // Jackson object mapper (convert between JSON and Java Objects)
         ObjectMapper mapper = new ObjectMapper();
 
         ScrumIntegration scrumIntegration = ScrumDoIntegration.newScrumDoIntegration();
@@ -40,7 +44,7 @@ public class Main {
         Mongo mongo = new Mongo();
         PersistenceIntegration whiteboardPersistence = new MongoDBPersistence(mongo.getDB("whiteboards"), colors);
 
-        WebServer server = WebServers.createWebServer(8080)
+        WebServer server = WebServers.createWebServer(port)
                 .add(new RequireGoogleChromeHandler()) // block other browsers than Chrome
                 .add("/whiteboard/interface", new WhiteboardHandler(mapper, users, whiteboardPersistence)) // handle whiteboard
                 .add("/whiteboard/create", new WhiteboardCreateHandler(mapper, whiteboardPersistence))
