@@ -444,8 +444,14 @@ function activateWhiteboard(username, hashID) {
         modal: true
     });
 
+    var toolSetup = function(tool, elem) {
+        $('.tool').removeClass('isActive');
+        $(elem).addClass('isActive');
+        app.tool(tool);
+    }
+
     $('#icontool img').click(function() {
-        app.tool(new Tools.Image(app, $(this).attr('src')));
+        toolSetup(new Tools.Image(app, $(this).attr('src')), $('#icons'));
         $('#icontool').dialog('close');
     });
 
@@ -456,7 +462,7 @@ function activateWhiteboard(username, hashID) {
         modal: true,
         buttons: {
             "Create": function() {
-                app.tool(new Tools.Text(app, $('#textInput').val()));
+                toolSetup(app.tool(new Tools.Text(app, $('#textInput').val())), $('#image'));
                 $(this).dialog('close');
             },
             "Cancel": function() {
@@ -474,7 +480,7 @@ function activateWhiteboard(username, hashID) {
     });
 
     // init colors
-    $.each(['black','red','green','blue','yellow'], function(idx, val) {
+    $.each(['black','red','green','blue','yellow', 'white'], function(idx, val) {
         console.log("setting color " + val);
         $('.' + val)
             .css('background-color', val)
@@ -484,10 +490,10 @@ function activateWhiteboard(username, hashID) {
     });
 
     // hook up tools
-    $('#line').click(function(){ app.tool(line); });
-    $('#rectangle').click(function(){ app.tool(rectangle); });
-    $('#pencil').click(function(){ app.tool(pencil); });
-    $('#eraser').click(function(){app.tool(eraser)});
+    $('#line').click(function(){ toolSetup(line, this); });
+    $('#rectangle').click(function(){ toolSetup(rectangle, this);  });
+    $('#pencil').click(function(){ toolSetup(pencil, this);  });
+    $('#eraser').click(function(){ toolSetup(eraser, this); });
     $('#snapshot').click(function(){ Drawing.Snapshot(app) });
     $('#image').click(function() {
         $('#imageupload').dialog("open");

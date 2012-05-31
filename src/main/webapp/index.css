@@ -79,8 +79,17 @@ section {
     width: 35px;
     height: 35px;
 }
+#tools .colorwhite {
+    float: left;
+    width: 33px;
+    height: 33px;
+    border: 1px #000 solid;
+}
 #tools img {
     border: 0;
     padding:0;
     margin:0;
+}
+.isActive {
+    background-color: #50C24E;
 }
