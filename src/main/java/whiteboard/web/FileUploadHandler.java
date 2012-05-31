@@ -49,7 +49,7 @@ public class FileUploadHandler implements HttpHandler {
 
         ResourceItem item = resourcesIntegration.create(boardID, filename, contentType, body);
 
-        item.url = "http://192.168.1.10:8080/resource/download?r=" + item.id;
+        item.url = "resource/download?r=" + item.id;
 
         httpResponse.header("Content-Type", "application/json").content(mapper.writeValueAsString(item)).end();
     }
