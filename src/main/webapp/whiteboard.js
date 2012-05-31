@@ -38,6 +38,14 @@ Drawing.Remove = function(element) {
     element.remove();
 }
 
+Drawing.Snapshot = function(app) {
+    noty({
+        text: "Snapshot taken.",
+        layout:"top",
+        type:"success",
+        animateOpen:{height:"toggle"},animateClose:{height:"toggle"},speed:500,timeout:5000,closeButton:false,closeOnSelfClick:true,closeOnSelfOver:false,modal:false});
+}
+
 Drawing.RichElement = function(app, element, elementID, username) {
 
     element.node.id = elementID;
@@ -112,6 +120,30 @@ Tools.Eraser = function(app) {
     }
 }
 
+Tools.Rectangle = function(app) {
+    var self = this;
+    self.box = null;
+    self.start = function(x, y) {
+        self.box = null;
+        self.m_start = {x: x, y: y};
+    }
+    self.move = function(x, y) {
+        var offset = { x: Math.min(x, self.m_start.x), y: Math.min(y, self.m_start.y) };
+        var dim = { width: Math.max(x, self.m_start.x) - offset.x, height: Math.max(y, self.m_start.y) - offset.y };
+        if (self.box == null) {
+            self.box = app.paper.rect(offset.x, offset.y, dim.width, dim.height)
+                .attr({stroke: app.color(), 'stroke-width': 2, fill: app.color(), 'fill-opacity': 0.2});
+        }
+        self.box.attr($.extend(offset, dim));
+    }
+    self.up = function(x, y) {
+        if (self.box != null) {
+            Drawing.RichElement(app, self.box, Drawing.NewID(), app.username);
+            app.draw(self.box);
+        }
+    }
+}
+
 Tools.Pencil = function(app) {
     var self = this;
     self.m_pathArray;
@@ -170,7 +202,7 @@ Tools.Text = function(app, text) {
     }
     self.move = function(x, y) {
         if (self.elem == null)
-            self.elem = app.paper.text(x, y, text).attr({fill: app.color});
+            self.elem = app.paper.text(x, y, text).attr({fill: app.color()});
 
         self.elem.attr({x: x, y: y});
     }
@@ -191,17 +223,15 @@ Tools.Image = function(app, src) {
         self.m_start = {x: x, y: y};
     };
     self.move = function (x, y) {
-        var sx = Math.min(self.m_start.x, x);
-        var sy = Math.min(self.m_start.y, y);
-        var ex = Math.max(self.m_start.x, x);
-        var ey = Math.max(self.m_start.y, y);
+        var offset = { x: Math.min(x, self.m_start.x), y: Math.min(y, self.m_start.y) };
+        var dim = { width: Math.max(x, self.m_start.x) - offset.x, height: Math.max(y, self.m_start.y) - offset.y };
 
         if (self.image == null) {
-            self.image = app.paper.image(src, sx, sy, ex - sx, ey - sy);
+            self.image = app.paper.image(src, offset.x, offset.y, dim.width, dim.height);
             self.image.node.id = Drawing.NewID();
         }
 
-        self.image.attr({x: sx, y: sy, width: ex - sx, height: ey - sy});
+        self.image.attr($.extend(offset, dim));
     };
     self.up = function (x, y) {
         if (self.image != null) {
@@ -244,12 +274,10 @@ App.Controller = function(hashID, divID) {
         if (self.drawing)
             self.tool().move(self.ox, self.oy);
         // console.log("mousemove x=" + self.ox + ", y=" + self.oy);
-        /*
         if (self.nextmove < new Date().getTime()) {
             self.move(self.ox, self.oy);
             self.nextmove = new Date().getTime() + 1000;
         }
-        */
     });
     self.element.mousedown(function(event) {
         var topMost = self.paper.getElementByPoint(self.ox, self.oy);
@@ -389,6 +417,7 @@ function activateWhiteboard(username, hashID) {
 
     var pencil = new Tools.Pencil(app);
     var line  = new Tools.Line(app);
+    var rectangle = new Tools.Rectangle(app);
     var eraser = new Tools.Eraser(app);
 
     app.tool(pencil);
@@ -450,8 +479,10 @@ function activateWhiteboard(username, hashID) {
 
     // hook up tools
     $('#line').click(function(){ app.tool(line); });
+    $('#rectangle').click(function(){ app.tool(rectangle); });
     $('#pencil').click(function(){ app.tool(pencil); });
     $('#eraser').click(function(){app.tool(eraser)});
+    $('#snapshot').click(function(){ Drawing.Snapshot(app) });
     $('#image').click(function() {
         $('#imageupload').dialog("open");
     });

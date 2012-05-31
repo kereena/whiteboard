@@ -116,7 +116,17 @@ public class WhiteboardHandler extends BaseWebSocketHandler {
         }
     }
 
-    public void move(OnlineUser user, String elementID) {
+    public class MoveCoords {
+        public double x;
+        public double y;
+    }
+
+    public void move(OnlineUser user, String payload) throws Exception {
+
+        MoveCoords move = mapper.readValue(payload, MoveCoords.class);
+
+        System.out.println(user.getUsername() + " moved to " + move.x + ", " + move.y);
+
         /*
         String id = webSocketConnection.httpRequest().id().toString();
         WhiteboardUser user = users.findByConnectionID(id);
