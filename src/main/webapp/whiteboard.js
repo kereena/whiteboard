@@ -59,10 +59,12 @@ Drawing.RichElement = function(app, element, elementID, username) {
             this.g.remove();
         this.hideTip();
     });
+    /*
     element.click(function() {
         app.remove(element.node.id);
         Drawing.Remove(element);
     })
+    */
 
 }
 
@@ -116,6 +118,13 @@ Tools.Eraser = function(app) {
                 Drawing.Remove(el);
             });
             self.box.remove();
+        }
+        else {
+            var elem = app.paper.getElementByPoint(self.m_start.x, self.m_start.y);
+            if (elem) {
+                app.remove(elem.node.id);
+                Drawing.Remove(elem);
+            }
         }
     }
 }
@@ -280,18 +289,15 @@ App.Controller = function(hashID, divID) {
         }
     });
     self.element.mousedown(function(event) {
-        var topMost = self.paper.getElementByPoint(self.ox, self.oy);
-        if (!topMost) {
-            self.drawing = true;
-            self.modalDrawing = self.paper.rect(0, 0, self.width, self.height).attr({fill: '#fff', opacity: 0.0});
-            self.tool().start(self.ox, self.oy);
-        }
+        self.drawing = true;
+        self.modalDrawing = self.paper.rect(0, 0, self.width, self.height).attr({fill: '#fff', opacity: 0.0});
+        self.tool().start(self.ox, self.oy);
     });
     self.element.mouseup(function(event) {
         if (self.drawing) {
-            self.tool().up(self.ox, self.oy);
             self.modalDrawing.remove();
             self.drawing = false;
+            self.tool().up(self.ox, self.oy);
         }
     });
 
