@@ -26,6 +26,15 @@ public class WhiteboardDetail {
         public String username;
         public String elementID;
         public JsonNode elementData;
+
+        public DrawingItem() {
+        }
+
+        public DrawingItem(String username, String elementID, JsonNode elementData) {
+            this.username = username;
+            this.elementID = elementID;
+            this.elementData = elementData;
+        }
     }
 
 }

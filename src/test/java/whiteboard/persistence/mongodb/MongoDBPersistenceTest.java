@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -124,9 +126,9 @@ public class MongoDBPersistenceTest {
     @Test
     public void testAddDrawingItem() throws Exception {
 
-        JsonElement json = new Gson().fromJson("['a','b']", JsonElement.class);
+        JsonNode json = new ObjectMapper().readValue("[\"a\",\"b\"]", JsonNode.class);
 
-        WhiteboardDetail.DrawingItem item = new WhiteboardDetail.DrawingItem("kkkkkkk", "ee", "ttt", json);
+        WhiteboardDetail.DrawingItem item = new WhiteboardDetail.DrawingItem("kkkkkkk", "ee", json);
 
         assertEquals(0, database.getCollection("whiteboards").count());
 
@@ -145,7 +147,6 @@ public class MongoDBPersistenceTest {
 
         assertEquals("kkkkkkk", di.username);
         assertEquals("ee", di.elementID);
-        assertEquals("ttt", di.elementType);
         assertNotNull(di.elementData);
 
         assertEquals(1, database.getCollection("whiteboards").count());
@@ -157,7 +158,6 @@ public class MongoDBPersistenceTest {
 
         assertEquals("kkkkkkk", di.username);
         assertEquals("ee", di.elementID);
-        assertEquals("ttt", di.elementType);
         assertNotNull(di.elementData);
 
         System.out.println("elementData loaded = " + di.elementData);
@@ -166,10 +166,10 @@ public class MongoDBPersistenceTest {
     @Test
     public void testRemoveDrawingItem() throws Exception {
 
-        JsonElement json = new Gson().fromJson("['a','b']", JsonElement.class);
+        JsonNode json = new ObjectMapper().readValue("[\"a\",\"b\"]", JsonNode.class);
 
-        WhiteboardDetail.DrawingItem item = new WhiteboardDetail.DrawingItem("kkkkkkk", "ee1", "ttt", json);
-        WhiteboardDetail.DrawingItem item2 = new WhiteboardDetail.DrawingItem("kkkkkkk", "ee2", "ttt", json);
+        WhiteboardDetail.DrawingItem item = new WhiteboardDetail.DrawingItem("kkkkkkk", "ee1", json);
+        WhiteboardDetail.DrawingItem item2 = new WhiteboardDetail.DrawingItem("kkkkkkk", "ee2", json);
 
         assertEquals(0, database.getCollection("whiteboards").count());
 

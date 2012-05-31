@@ -77,12 +77,11 @@ public class MemoryNoPersistenceTest {
 
         assertEquals(0, detail.items.size());
 
-        WhiteboardDetail detail2 = testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid", "etype", null));
+        WhiteboardDetail detail2 = testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid", null));
 
         assertEquals(1, detail2.items.size());
         assertEquals("bbbb", detail2.items.get(0).username);
         assertEquals("eid", detail2.items.get(0).elementID);
-        assertEquals("etype", detail2.items.get(0).elementType);
         assertNull(detail2.items.get(0).elementData);
 
     }
@@ -94,10 +93,10 @@ public class MemoryNoPersistenceTest {
 
         assertEquals(0, detail.items.size());
 
-        testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid1", "etype", null));
-        testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid2", "etype", null));
-        testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid3", "etype", null));
-        WhiteboardDetail detail2 = testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid4", "etype", null));
+        testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid1", null));
+        testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid2", null));
+        testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid3", null));
+        WhiteboardDetail detail2 = testing.addDrawingItem(detail.boardID, new WhiteboardDetail.DrawingItem("bbbb", "eid4", null));
 
         assertEquals(4, detail2.items.size());
 
