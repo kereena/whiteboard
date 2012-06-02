@@ -72,22 +72,22 @@ public class MongoDBPersistence implements PersistenceIntegration {
             return detail;
         detail.users.put(username, colors.getColor(username, detail.users.size()));
         WriteResult<WhiteboardDetail, String> result =
-                whiteboards.updateById(boardID, new DBUpdate.Builder().set("users." + username, detail.users.get(username)));
+                whiteboards.updateById(boardID, DBUpdate.set("users." + username, detail.users.get(username)));
         return detail;
     }
 
     @Override
-    public WhiteboardDetail addDrawingItem(String boardID, WhiteboardDetail.DrawingItem drawingItem) {
-        WhiteboardDetail detail = whiteboards.findOneById(boardID);
-        detail.items.add(drawingItem);
-        WriteResult<WhiteboardDetail, String> result =
-                whiteboards.updateById(boardID, new DBUpdate.Builder().push("items", drawingItem));
-        return detail;
-    }
+public WhiteboardDetail addDrawingItem(String boardID, WhiteboardDetail.DrawingItem drawingItem) {
+    WhiteboardDetail detail = whiteboards.findOneById(boardID);
+    detail.items.add(drawingItem);
+    WriteResult<WhiteboardDetail, String> result =
+            whiteboards.updateById(boardID, DBUpdate.push("items", drawingItem));
+    return detail;
+}
 
     @Override
     public WhiteboardDetail removeDrawingItem(String boardID, String elementID) {
-        whiteboards.updateById(boardID, new DBUpdate.Builder().pull("items", new BasicDBObject("elementID", elementID)));
+        whiteboards.updateById(boardID, DBUpdate.pull("items", new BasicDBObject("elementID", elementID)));
         return whiteboards.findOneById(boardID);
     }
 }

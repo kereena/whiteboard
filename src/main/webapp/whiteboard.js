@@ -70,6 +70,7 @@ Drawing.RichElement = function(app, element, elementID, username) {
 
 var Tools = {};
 
+// Convert raphael element to Javascript object.
 Tools.ToJSON = function(element) {
     var res = {'type': element.type};
     $.extend(res, element.attrs);

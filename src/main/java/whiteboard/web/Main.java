@@ -25,25 +25,21 @@ public class Main {
 
         // what port to listen on, get from system properties and default to 8080
         int port = Integer.parseInt(System.getProperty("port", "8080"));
-
         // Jackson object mapper (convert between JSON and Java Objects)
         ObjectMapper mapper = new ObjectMapper();
-
+        // initialize scrum integration
         ScrumIntegration scrumIntegration = ScrumDoIntegration.newScrumDoIntegration();
-
+        // initialize resources handling
         ResourcesIntegration resources = new FilesResources(new File("./files"));
-
         // create object for online users
         OnlineUsers users = new OnlineUsers();
-
         // create object for colors
         ColorsIntegration colors = new CyclingHtmlColors();
-
         // create object for whiteboards.
         //PersistenceIntegration whiteboardPersistence = new MemoryNoPersistence(colors);
         Mongo mongo = new Mongo();
         PersistenceIntegration whiteboardPersistence = new MongoDBPersistence(mongo.getDB("whiteboards"), colors);
-
+        // create the webserver and start it.
         WebServer server = WebServers.createWebServer(port)
                 .add(new RequireGoogleChromeHandler()) // block other browsers than Chrome
                 .add("/whiteboard/interface", new WhiteboardHandler(mapper, users, whiteboardPersistence)) // handle whiteboard
@@ -57,9 +53,7 @@ public class Main {
                 .add(new StaticFileHandler("src/main/webapp")) // give path to HTML and Javascript files.
                 .start() // start the server
                 .get(); // and return it
-
         // print the server web address
         System.out.println("server started at " + server.getUri());
-
     }
 }

@@ -51,11 +51,10 @@
             <version>2.1</version>
         </dependency>
         <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.2</version>
+            <groupId>com.google.java.contract</groupId>
+            <artifactId>cofoja</artifactId>
+            <version>1.0-r139</version>
         </dependency>
-
         <!--
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -84,7 +83,7 @@
     <repositories>
         <repository>
             <id>kokila</id>
-            <url>http://tanesha.net/maven2</url>
+            <url>http://cuddapah.kokila.eu/maven2</url>
         </repository>
     </repositories>
 

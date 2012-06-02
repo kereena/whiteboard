@@ -2,6 +2,9 @@ package whiteboard.persistence;
 
 import java.util.List;
 
+/**
+ * Defines how the persistence should work.
+ */
 public interface PersistenceIntegration {
 
     public WhiteboardDetail create(String owner, String title, String description);
