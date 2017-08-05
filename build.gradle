@@ -1,0 +1,22 @@
+
+apply plugin: "java"
+apply plugin: "application"
+
+group = "eu.kokila"
+version = 1.0
+mainClassName = "whiteboard.web.Main"
+
+repositories {
+  mavenCentral()
+  maven { url "http://conjars.org/repo" }
+}
+
+dependencies {
+  compile 'org.webbitserver:webbit:0.4.7'
+  compile "com.fasterxml.jackson.core:jackson-databind:2.0.2"
+  compile "scrumdo:scrumdo-java-library:1.0-SNAPSHOT"
+  compile "org.mongodb:mongo-java-driver:2.7.2"
+  compile "net.vz.mongodb.jackson:mongo-jackson-mapper:1.4.2"
+  compile "commons-io:commons-io:2.1"
+  testCompile "junit:junit:4.12"
+}

@@ -14,6 +14,7 @@ import whiteboard.persistence.mongodb.MongoDBPersistence;
 import whiteboard.resources.ResourcesIntegration;
 import whiteboard.resources.files.FilesResources;
 import whiteboard.stories.ScrumIntegration;
+import whiteboard.stories.DummyScrumIntegration;
 import whiteboard.stories.scrumdo.ScrumDoIntegration;
 import whiteboard.web.util.RequireGoogleChromeHandler;
 
@@ -28,7 +29,8 @@ public class Main {
         // Jackson object mapper (convert between JSON and Java Objects)
         ObjectMapper mapper = new ObjectMapper();
         // initialize scrum integration
-        ScrumIntegration scrumIntegration = ScrumDoIntegration.newScrumDoIntegration();
+        // ScrumIntegration scrumIntegration = ScrumDoIntegration.newScrumDoIntegration();
+        ScrumIntegration scrumIntegration = new DummyScrumIntegration();
         // initialize resources handling
         ResourcesIntegration resources = new FilesResources(new File("./files"));
         // create object for online users
@@ -36,9 +38,9 @@ public class Main {
         // create object for colors
         ColorsIntegration colors = new CyclingHtmlColors();
         // create object for whiteboards.
-        //PersistenceIntegration whiteboardPersistence = new MemoryNoPersistence(colors);
-        Mongo mongo = new Mongo();
-        PersistenceIntegration whiteboardPersistence = new MongoDBPersistence(mongo.getDB("whiteboards"), colors);
+        PersistenceIntegration whiteboardPersistence = new MemoryNoPersistence(colors);
+        //Mongo mongo = new Mongo();
+        //PersistenceIntegration whiteboardPersistence = new MongoDBPersistence(mongo.getDB("whiteboards"), colors);
         // create the webserver and start it.
         WebServer server = WebServers.createWebServer(port)
                 .add(new RequireGoogleChromeHandler()) // block other browsers than Chrome
